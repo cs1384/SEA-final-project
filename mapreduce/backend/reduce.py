@@ -11,7 +11,6 @@ import os
 from heapq import merge
 # 
 from ..config import settings
-from fs import DisList, DisTable
 
 class ReduceHandler(tornado.web.RequestHandler):
   @gen.coroutine
@@ -22,13 +21,7 @@ class ReduceHandler(tornado.web.RequestHandler):
     reducerPath = self.get_arguments('reducerPath')[0]
     mapTaskIDs = self.get_arguments('mapTaskIDs')[0].split(',')
     outputDir = self.get_arguments('outputDir')[0]
-    jobTableName = self.get_arguments('jobTableName')[0]
-    index = self.get_arguments('index')[0]
 
-    # get jobTable
-    jobTable = DisTable(tableName=jobTableName)
-
-    '''
     # fetch data from mappers
     future = []
     http_client = AsyncHTTPClient()
@@ -43,31 +36,20 @@ class ReduceHandler(tornado.web.RequestHandler):
     response = yield future
     for r in response:
       data = list(merge(data, json.loads(r.body)))
-    '''
-
-    # get mapper results directly from the jobTable
-    data = []
-    for taskID in mapTaskIDs:
-      data = list(merge(data, jobTable[taskID][reducerIx]))
 
     # run reducers
     inputString = '\n'.join(settings.delimiter.join(s for s in pair) for pair in data)
     p = subprocess.Popen(["python", "-m", reducerPath], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     (out, err) = p.communicate(inputString.encode('utf-8'))
 		
-		# write to the jobTable
+		# write to file
     if out:
-      something = pickle.loads(out)
-      jobTable[reducerIx] = something
-
-      '''
       if not os.path.exists(outputDir): os.mkdir(outputDir)
       path = outputDir + '/' + str(reducerIx) + '.out'
       file = open(path, 'w')
       file.write(str(out))
       file.close()
       #print 'here'
-      '''
       res = {'status': 'success'}
       self.write(json.dumps(res))
       print 'reducer done'
