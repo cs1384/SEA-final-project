@@ -22,7 +22,8 @@ class Trainer:
   adjust = 0.01
 
   def setWorkerInfo(self, jsonPath):
-    self.workers = json.load(open(jsonPath, "r"))
+    #self.workers = json.load(open(jsonPath, "r"))
+    self.workers = json.load(open(jsonPath, "r"))['classification']
     self.nMachines = len(self.workers)
     print self.workers
 

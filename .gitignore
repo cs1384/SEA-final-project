@@ -7,7 +7,7 @@ config.json
 classification/*.json
 constants/classification_weights/*.out
 constants/training_set.p
-address.json
+
 constants/Doc
 constants/IDF
 constants/Index

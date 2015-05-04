@@ -28,6 +28,7 @@ class ReduceHandler(tornado.web.RequestHandler):
     for address in self.application.inventory:
       for taskID in mapTaskIDs:
         url = self.formFetchQuery(address, reducerIx, taskID)
+        #print url
         future.append(http_client.fetch(url))
 
     # merge results
