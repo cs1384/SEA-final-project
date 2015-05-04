@@ -13,7 +13,8 @@ import yaml
 class MapReduceFramework:
   workers = []
   def getWorkerInfo(self, jsonPath='address.json'):
-    self.workers = json.load(open(jsonPath, "r"))
+    self.workers = json.load(open(jsonPath, "r"))['mapreduce']
+    #self.workers = json.load(open(jsonPath, "r"))
     self.nMachines = len(self.workers)
     print self.workers
 

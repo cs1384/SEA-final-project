@@ -12,42 +12,22 @@ Building up movie seach engine plus customized recommendation system
 #Note, the num of partitions should corresping to the num of backend works
 #Default: (NumSuperFront, NumMaster, NumMovie, NumReview, NumIdx, NumDoc)= (1, 3, 3, 3, 3, 3)
 python -m src.reformatter <# of partitions for review> <# of partitions for movie>
+python -m src.reformatter 4 5 
 ```
-## 2. call mapreduce workers
+## 2. call prework workers
 ```
-python -m mapreduce.workers
-```
-## 3. call classification workers
-```
-python -m classification.workers
+python -m PreworkWorkers
 ```
 ## 4.prepare pickle files for all servers 
 ```
 python -m Prepare
 ```
-## call mapreduce workers
-```
-python -m mapreduce.workers
-
-```
-## call classification workers
-```
-python -m classification.workers
-
-```
-##prepare pickle files for all servers 
-```
-python -m Prepare
-
-```
-
-##Start All the works
+##5 Start All the works
 
 Goal: 1. find ports, 2. fire up all servers
 ```
 python ./StartAll.py
 ```
-
 ## 6. Fire up frontend (google app engine)
 https://cloud.google.com/sdk/#Quick_Start
 ```
