@@ -9,6 +9,7 @@ import subprocess
 import uuid
 # 
 from ..config import settings
+from fs import DisList, DisTable
 
 mapResult = {}
 
@@ -19,6 +20,7 @@ class MapHandler(tornado.web.RequestHandler):
     mapperPath = self.get_arguments('mapperPath')[0]
     inputPath = str(self.get_arguments('inputFile')[0])
     numReducers = int(self.get_arguments('numReducers')[0])
+    jobTableName = self.get_arguments('jobTableName')[0]
     # run mapper
     file = open(inputPath, 'r')
     content = file.read()
@@ -29,25 +31,35 @@ class MapHandler(tornado.web.RequestHandler):
       res = {"status": "failed"}
       self.write(json.dumps(res))
       return
-		# constitute the task result
-    result = {}
+		
+    # get jobTable
+    jobTable = DisTable(tableName=jobTableName)
+
+    # get task ID
+    taskID = str(uuid.uuid4()).replace('-','')
+    while taskID in mapResult:
+      taskID = str(uuid.uuid4()).replace('-','')
+    
+    # add dict for this task
+    jobTable[taskID] = {}
+
+    # create lists for reducers
     for idx in range(numReducers):
-      result[idx] = []
+      jobTable[taskID][idx] = []
+
     lines = out.split("\n")
     for line in lines:
       if line == '':continue
       temp = line.split(settings.delimiter)
       idx = hash(temp[0])%numReducers
-      result[idx].append(temp)
+      # update this certain reducer's list
+      jobTable[taskID][idx].append(temp)
+
 		# sort all lists in result
-    for key in result.keys():
-      lst = result[key]
+    for key in jobTable[taskID].keys():
+      lst = jobTable[taskID][key]
       lst.sort(key=lambda x: x[0])
-		# write the task result to gloabal memory 
-    taskID = str(uuid.uuid4()).replace('-','')
-    while taskID in mapResult:
-      taskID = str(uuid.uuid4()).replace('-','')
-    mapResult[taskID] = result
+
 		# write response 
     print taskID
     res = {"status": "success", "mapTaskID": taskID}
