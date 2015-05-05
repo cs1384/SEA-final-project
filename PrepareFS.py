@@ -2,6 +2,7 @@ import mapreduce.framework as framework
 import classification.trainer as trainer
 import tornado.ioloop
 from src import color
+from fs import DisList, DisTable
 
 
 def main():
@@ -14,10 +15,21 @@ def main():
   
   #print C.HEADER + "=========== Start Local Indexing ===========" + C.ENDC
   # localIndexer.ReviewIndexing()
-  
+
+  #mrf.mapReduceFS('tintest', 'mapreduce/test/fish_jobs', 'mapreduce.test.wordcount.mapper', 1, 'mapreduce.test.wordcount.reducer', 'mapreduce/test/fish_jobs/out')
+  #tornado.ioloop.IOLoop.instance().start()
+
   print C.HEADER + "=========== Start Indexing Movies ===========" + C.ENDC
+  print C.OKBLUE + "Start idfBuilder_test" + C.ENDC
+  mrf.mapReduceFS('idfBuilder_test', 'mapreduce/input_movie_test', 'src.idfBuilder.mapper', 1, 'src.idfBuilder.reducer', 'constants/idf')
+  tornado.ioloop.IOLoop.instance().start()
+  jobTable = DisTable(tableName='idfBuilder_test')
+  print type(jobTable)
+  print jobTable.fetch_all()
+  print 'works!!'
+
   print C.OKBLUE + "Start idfBuilder" + C.ENDC
-  mrf.mapReduceFS('idfBuilder', 'constants/input_movie', 'src.idfBuilder.mapper', 1, 'src.idfBuilder.reducer', 'constants/idf')
+  mrf.mapReduceFS('idfBuilder', 'constants/input_movie_test', 'src.idfBuilder.mapper', 1, 'src.idfBuilder.reducer', 'constants/idf')
   tornado.ioloop.IOLoop.instance().start()
   print C.OKBLUE + "Start invertedIndexer" + C.ENDC
   mrf.mapReduceFS('invertedIndexer', 'constants/input_movie', 'src.invertedIndexer.mapper', 3, 'src.invertedIndexer.reducer', 'constants/invertedIndex')  

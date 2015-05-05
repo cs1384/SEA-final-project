@@ -2,6 +2,7 @@ from fs import DisList, DisTable
 
 # declare a DisTable
 test = DisTable({'test':'test'}, tableName='TEST')
+
 # retrieve the DisTable
 jobTable = DisTable(tableName='TEST')
 
@@ -16,6 +17,5 @@ fetched = test['hello']['hi'].fetch_all()
 
 for i in fetched:
 	print i
-
 
 print 'hihi'

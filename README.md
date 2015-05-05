@@ -18,9 +18,13 @@ python -m src.reformatter 4 5
 ```
 python -m PreworkWorkers
 ```
+## 3. spin up fs system
+```
+python -m fsStart
+```
 ## 4.prepare pickle files for all servers 
 ```
-python -m Prepare
+python -m PrepareFS
 ```
 ##5 Start All the works
 
