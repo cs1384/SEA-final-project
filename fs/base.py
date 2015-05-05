@@ -41,7 +41,7 @@ class DisObj(object):
 Distributed list Object
 '''
 class DisList(DisObj):
-  def __init__(self, initVal=[], tableName=None):
+  def __init__(self, initVal=[], tableName=None, ref=True):
     if tableName is None:
       self.name = TableName(uuid.uuid4().hex)
     else:
@@ -58,7 +58,7 @@ class DisList(DisObj):
         newInitVal[idx] = initVal[idx]
 
     #Create request to master
-    if len(newInitVal.keys()) > 0:
+    if len(newInitVal.keys()) > 0 or ref == False:
       param = {'tableName': self.name, 'initVal': newInitVal}
       HTTPClient().fetch(formatQuery(self.master, 'create', param))
 
@@ -77,6 +77,13 @@ class DisList(DisObj):
   param val - any, value to be updated
   '''
   def __setitem__(self, idx, val):
+    if isinstance(val, dict):
+      newVal = DisTable(initVal=val, ref=False)
+    elif isinstance(val, list):
+      newVal = DisList(initVal=val, ref=False)
+    else:
+      newVal = val
+
     param = {'tableName': self.name, 'key': idx, 'val': val}
     return HTTPClient().fetch(formatQuery(self.master, 'set', param)).body
 
@@ -151,7 +158,7 @@ class DisList(DisObj):
 Distributed table Object
 '''
 class DisTable(DisObj):
-  def __init__(self, initVal={}, tableName=None):
+  def __init__(self, initVal={}, tableName=None, ref=True):
     if tableName is None:
       self.name = TableName(uuid.uuid4().hex)
     else:
@@ -168,7 +175,7 @@ class DisTable(DisObj):
         newInitVal[key] = initVal[key]
 
     #Create request to master
-    if len(newInitVal.keys()) > 0:
+    if len(newInitVal.keys()) > 0 or ref == False:
       param = {'tableName': self.name, 'initVal': newInitVal}
       HTTPClient().fetch(formatQuery(self.master, 'create', param))
 
@@ -190,7 +197,14 @@ class DisTable(DisObj):
   param val - value to be updated into table
   '''
   def __setitem__(self, key, val):
-    param = {'tableName': self.name, 'key': key, 'val': val}
+    if isinstance(val, dict):
+      newVal = DisTable(initVal=val, ref=False)
+    elif isinstance(val, list):
+      newVal = DisList(initVal=val, ref=False)
+    else:
+      newVal = val
+
+    param = {'tableName': self.name, 'key': key, 'val': newVal}
     return HTTPClient().fetch(formatQuery(self.master, 'set', param)).body
 
   @property
