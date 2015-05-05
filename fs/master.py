@@ -33,7 +33,7 @@ class FSMaster(object):
     if tableName in self.tables:
       raise KeyError, 'Table name already existed'
 
-    print 'MASTER CREATE:', initVal
+    #print 'MASTER CREATE:', initVal
     self.tables[tableName] = {'len': 0, }
     #Data Partition
     vals = {}
@@ -65,7 +65,7 @@ class FSMaster(object):
     worker = self.workers[hash(key) % self.num_workers]
     args = {'tableName': tableName, 'key': key}
 
-    print 'MASTER -> {0} GET: {1} with key {2}'.format(worker, tableName, key)
+    #print 'MASTER -> {0} GET: {1} with key {2}'.format(worker, tableName, key)
 
     return self.client.fetch(formatQuery(worker, 'get', args))
 
@@ -116,7 +116,7 @@ class FSMaster(object):
     args = {'tableName': tableName, 'key': self.tables[tableName]['len'], 'val': val}
     worker = self.workers[hash(self.tables[tableName]['len']) % self.num_workers]
 
-    print 'MASTER -> {0} Append: {1} to key {2}'.format(worker, val, self.tables[tableName]['len'])
+    #print 'MASTER -> {0} Append: {1} to key {2}'.format(worker, val, self.tables[tableName]['len'])
     self.client.fetch(formatQuery(worker, 'set', args))
 
     fu = Future()
