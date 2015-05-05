@@ -7,7 +7,7 @@ for line in sys.stdin:
   for review in value['reviews']:
     try:
       reviewer = review['critic']
-      quote = review['quote']
+      quote = review['quote'].lower()
       rating = review['original_score']
       print key + settings.delimiter + str((reviewer, rating, quote))
     except:
