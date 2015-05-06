@@ -22,6 +22,7 @@ class MapHandler(tornado.web.RequestHandler):
     numReducers = int(self.get_arguments('numReducers')[0])
     jobTableName = self.get_arguments('jobTableName')[0]
     # run mapper
+    print 'mapper starts!!'
     file = open(inputPath, 'r')
     content = file.read()
     p = subprocess.Popen(["python", "-m", mapperPath], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -34,18 +35,33 @@ class MapHandler(tornado.web.RequestHandler):
 		
     # get jobTable
     jobTable = DisTable(tableName=jobTableName)
-
+    
     # get task ID
     taskID = str(uuid.uuid4()).replace('-','')
-    while taskID in mapResult:
+    print type(jobTable)  
+    '''  
+    newTable = jobTable.fetch_all()
+    print type(newTable)
+    while taskID in newTable:
       taskID = str(uuid.uuid4()).replace('-','')
+    '''
     
-    # add dict for this task
+    #jobTable[taskID] = { "test": "Calvin rocks." }
+    #jobTable[taskID] = {}
     jobTable[taskID] = {}
+    print type(jobTable[taskID])
 
+
+    #jobTable[taskID]['1'] = []
+    
+    #newTable = jobTable[taskID].fetch_all()
     # create lists for reducers
     for idx in range(numReducers):
-      jobTable[taskID][idx] = []
+      jobTable[taskID][idx] = [] 
+      #jobTable[taskID] = { "test": "Calvin rocks." }
+      #print jobTable[taskID].length
+
+    print '----------------------------'
 
     lines = out.split("\n")
     for line in lines:
@@ -54,16 +70,20 @@ class MapHandler(tornado.web.RequestHandler):
       idx = hash(temp[0])%numReducers
       # update this certain reducer's list
       jobTable[taskID][idx].append(temp)
-
+    
 		# sort all lists in result
-    for key in jobTable[taskID].keys():
-      lst = jobTable[taskID][key]
+    print '==== sort'
+    newTable = jobTable[taskID].fetch_all()
+    for key in newTable.keys():
+      lst = newTable[key]
       lst.sort(key=lambda x: x[0])
+    jobTable[taskID] = newTable
 
 		# write response 
     print taskID
     res = {"status": "success", "mapTaskID": taskID}
     self.write(json.dumps(res))
+    print '----------------------------'
 
 class RetrieveOutputHandler(tornado.web.RequestHandler):
   @gen.coroutine
@@ -83,6 +103,7 @@ class RetrieveOutputHandler(tornado.web.RequestHandler):
     del mapResult[taskID][reducerIx]
     if len(mapResult[taskID]) == 0:
       del mapResult[taskID]
+
 
 	
 	

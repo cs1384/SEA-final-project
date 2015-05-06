@@ -24,7 +24,7 @@ class FSWorker(object):
     self.tables[tableName] = {}
     for key in initVal:
       self.tables[tableName][key] = initVal[key]
-    print 'Worker {0} CREATE:'.format(self.host), self.tables[tableName]
+    #print 'Worker {0} CREATE:'.format(self.host), self.tables[tableName]
 
     #Release
     fu = Future()
@@ -47,7 +47,7 @@ class FSWorker(object):
     key = param['key']
     val = param['val']
 
-    print 'Worker {0} SET: {1} with key {2} to {3}'.format(self.host, tableName, key, val)
+    #print 'Worker {0} SET: {1} with key {2} to {3}'.format(self.host, tableName, key, val)
 
     self.tables[tableName][key] = val
 

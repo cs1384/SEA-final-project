@@ -1,5 +1,21 @@
 from fs import DisList, DisTable
 
-test = DisTable({1: 'a', 2: 'b', 3: [1, 2, 3, 4, {5: 'f', 6: 'g', 7: 'h'}]}, tableName='TEST')
+# declare a DisTable
+test = DisTable({'test':'test'}, tableName='TEST')
+
+# retrieve the DisTable
+jobTable = DisTable(tableName='TEST')
+
+jobTable['hello'] = {}
+print test['hello'].fetch_all()
+
+jobTable['hello']['hi'] = []
+jobTable['hello']['hi'].append(1)
+jobTable['hello']['hi'].append(2)
+
+fetched = test['hello']['hi'].fetch_all()
+
+for i in fetched:
+	print i
 
 print 'hihi'

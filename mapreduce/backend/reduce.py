@@ -8,6 +8,7 @@ import json
 import yaml
 import subprocess
 import os
+import pickle
 from heapq import merge
 # 
 from ..config import settings
@@ -23,10 +24,10 @@ class ReduceHandler(tornado.web.RequestHandler):
     mapTaskIDs = self.get_arguments('mapTaskIDs')[0].split(',')
     outputDir = self.get_arguments('outputDir')[0]
     jobTableName = self.get_arguments('jobTableName')[0]
-    index = self.get_arguments('index')[0]
 
     # get jobTable
     jobTable = DisTable(tableName=jobTableName)
+    print type(jobTable)
 
     '''
     # fetch data from mappers
@@ -48,7 +49,9 @@ class ReduceHandler(tornado.web.RequestHandler):
     # get mapper results directly from the jobTable
     data = []
     for taskID in mapTaskIDs:
-      data = list(merge(data, jobTable[taskID][reducerIx]))
+      print taskID
+      lst = jobTable[taskID][reducerIx].fetch_all()
+      data = list(merge(data, lst))
 
     # run reducers
     inputString = '\n'.join(settings.delimiter.join(s for s in pair) for pair in data)
@@ -57,6 +60,7 @@ class ReduceHandler(tornado.web.RequestHandler):
 		
 		# write to the jobTable
     if out:
+      print type(out)
       something = pickle.loads(out)
       jobTable[reducerIx] = something
 
