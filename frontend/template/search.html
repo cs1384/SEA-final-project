@@ -4,12 +4,14 @@
 <!-- search bar -->
 <div class='container-fluid'>
   <center>
+    <div style="width:30%"><img style="width:100%" src="/pic/frontphoto.jpg"></div>
+    <br>
     <form id='search' role='form' method='GET' action='/'>
     <div class='col-lg-5'>
       {% if query  %}
-        <input style="width:30%" type="text" name="q" value="{{ query }}">
+        <input style="width:60%" type="text" name="q" value="{{ query }}">
       {% else %}
-        <input style="width:30%" type="text" name="q" placeholder=" query">
+        <input style="width:60%" type="text" name="q" placeholder=" query">
       {% endif %}
         <input class='btn btn-success' type='submit' value='Search'>
     </div>
@@ -41,17 +43,7 @@
             <img src="{{ movie[4] }}" stype="width:100%" >
           </div>
         </td></tr>
-      {% endfor %}
-      <!--
-      <tr><td align="center">
-        <form id='s_avatar' method='POST' action='/review'>
-        <input type='hidden' name='mid' value='87833'>
-        <input type='hidden' name='title' value='avatar'>
-        <a href="javascript:{}" onclick="document.getElementById('s_avatar').submit();">Avatar</a>
-        </form>
-      </td></tr>
-      -->
-      
+      {% endfor %}      
     </tbody>
   </table>
 </div>
@@ -87,7 +79,7 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <td align="center"><strong>Recommanded</strong></td>
+        <td align="center"><strong>Recommended</strong></td>
       </tr>
     </thead>
     <tbody>

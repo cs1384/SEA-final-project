@@ -16,6 +16,9 @@ handlers:
   script: review.app
   login: required
 
+- url: /pic
+  static_dir: template/pic
+
 libraries:
 - name: webapp2
   version: "2.5.2"
